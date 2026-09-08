@@ -112,6 +112,60 @@ const tickerItems = [
   { pair: "USD/JPY", result: "+ 41 pips", up: true },
 ];
 
+const platformPartners = [
+  {
+    name: "BINANCE",
+    badge: "VIP CRYPTO SIGNALS",
+    color: "#F0B90B",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-5 h-5" fill="#F0B90B">
+        <path d="M12 2L8.5 5.5L12 9L15.5 5.5L12 2ZM3 12L6.5 8.5L10 12L6.5 15.5L3 12ZM21 12L17.5 8.5L14 12L17.5 15.5L21 12ZM12 22L8.5 18.5L12 15L15.5 18.5L12 22ZM12 10.5L9.5 13L12 15.5L14.5 13L12 10.5Z" />
+      </svg>
+    ),
+  },
+  {
+    name: "FOREX (MT4 / MT5)",
+    badge: "HIGH ACCURACY CALLS",
+    color: "#3ED6B5",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="#3ED6B5" strokeWidth="2">
+        <path d="M6 3v4m0 10v4m-2-14h4v10H4zM18 1v6m0 10v6m-2-16h4v10h-4zM12 7v2m0 8v2m-2-8h4v6h-4z" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    name: "XAU / USD GOLD",
+    badge: "96% - 98% ACCURACY",
+    color: "#F2C230",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="#F2C230" strokeWidth="2">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v10M9 10h6M9 14h6" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    name: "TRADINGVIEW",
+    badge: "LIVE TECHNICAL CHARTS",
+    color: "#4084F4",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="#4084F4" strokeWidth="2">
+        <path d="M3 19h18M5 15l4-8 4 6 5-10" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    name: "BYBIT & DERIVATIVES",
+    badge: "SCALPING & SWING",
+    color: "#F7A600",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-5 h-5" fill="#F7A600">
+        <path d="M4 4h7v16H4V4zm9 0h7v8h-7V4zm0 10h7v6h-7v-6z" />
+      </svg>
+    ),
+  },
+];
+
 export default function App() {
   const [navOpen, setNavOpen] = useState(false);
 
@@ -148,10 +202,33 @@ export default function App() {
           50% { transform: translateY(-10px); }
         }
         .float-slow { animation: floatSlow 6s ease-in-out infinite; }
+        @keyframes floatBadge1 {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-14px) rotate(1.5deg); }
+        }
+        .float-badge-1 { animation: floatBadge1 5.5s ease-in-out infinite; }
+        @keyframes floatBadge2 {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-16px) rotate(-1.5deg); }
+        }
+        .float-badge-2 { animation: floatBadge2 6.5s ease-in-out infinite 0.8s; }
+        @keyframes marqueeReverse {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
+        }
+        .marquee-reverse { animation: marqueeReverse 32s linear infinite; }
+        @keyframes dashLine {
+          0% { stroke-dashoffset: 1000; }
+          100% { stroke-dashoffset: 0; }
+        }
+        .animate-dash-line {
+          stroke-dasharray: 1000;
+          animation: dashLine 4s cubic-bezier(0.4, 0, 0.2, 1) forwards infinite alternate;
+        }
         html { scroll-behavior: smooth; }
         ::selection { background: ${GOLD}; color: #000; }
         @media (prefers-reduced-motion: reduce) {
-          .marquee-track, .glow-pulse, .float-slow { animation: none !important; }
+          .marquee-track, .marquee-reverse, .glow-pulse, .float-slow, .float-badge-1, .float-badge-2, .animate-dash-line { animation: none !important; }
         }
         a, button { -webkit-tap-highlight-color: transparent; }
       `}</style>
@@ -224,7 +301,77 @@ export default function App() {
             pointerEvents: "none",
           }}
         />
-        <div className="max-w-4xl mx-auto text-center relative">
+
+        {/* Animated Live Trading Chart Wave in Hero Background */}
+        <div className="absolute inset-0 pointer-events-none opacity-30 overflow-hidden flex items-center justify-center">
+          <svg className="w-full h-full min-w-[900px]" viewBox="0 0 1200 380" fill="none" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="chartGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#F2C230" stopOpacity="0.2" />
+                <stop offset="35%" stopColor="#3ED6B5" stopOpacity="0.9" />
+                <stop offset="70%" stopColor="#F2C230" stopOpacity="0.9" />
+                <stop offset="100%" stopColor="#3ED6B5" stopOpacity="0.3" />
+              </linearGradient>
+              <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#3ED6B5" stopOpacity="0.12" />
+                <stop offset="100%" stopColor="#07080A" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="90" x2="1200" y2="90" stroke="rgba(242,194,48,0.06)" strokeDasharray="5 5" />
+            <line x1="0" y1="180" x2="1200" y2="180" stroke="rgba(242,194,48,0.06)" strokeDasharray="5 5" />
+            <line x1="0" y1="270" x2="1200" y2="270" stroke="rgba(242,194,48,0.06)" strokeDasharray="5 5" />
+            <path d="M0,300 C200,280 300,190 450,210 C600,230 680,110 880,130 C1020,150 1100,70 1200,60 L1200,380 L0,380 Z" fill="url(#areaGradient)" />
+            <path d="M0,300 C200,280 300,190 450,210 C600,230 680,110 880,130 C1020,150 1100,70 1200,60" stroke="url(#chartGradient)" strokeWidth="3" className="animate-dash-line" />
+          </svg>
+        </div>
+
+        <div className="max-w-5xl mx-auto text-center relative">
+          {/* Floating Binance Trading Badge */}
+          <div
+            className="hidden lg:flex items-center gap-3 absolute -left-8 top-16 p-3.5 rounded-2xl float-badge-1 backdrop-blur-md z-10"
+            style={{
+              background: "rgba(17,18,22,0.85)",
+              border: "1px solid rgba(240,185,11,0.35)",
+              boxShadow: "0 12px 30px rgba(0,0,0,0.6), 0 0 20px rgba(240,185,11,0.15)",
+            }}
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(240,185,11,0.12)" }}>
+              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="#F0B90B">
+                <path d="M12 2L8.5 5.5L12 9L15.5 5.5L12 2ZM3 12L6.5 8.5L10 12L6.5 15.5L3 12ZM21 12L17.5 8.5L14 12L17.5 15.5L21 12ZM12 22L8.5 18.5L12 15L15.5 18.5L12 22ZM12 10.5L9.5 13L12 15.5L14.5 13L12 10.5Z" />
+              </svg>
+            </div>
+            <div className="text-left">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#3ED6B5] animate-pulse"></span>
+                <span className="text-[11px] font-bold tracking-wider text-[#F0B90B] uppercase">BINANCE VIP</span>
+              </div>
+              <div className="text-xs font-semibold text-[#F3EFE4]">BTC/USDT Long +14.2%</div>
+            </div>
+          </div>
+
+          {/* Floating Forex Gold Badge */}
+          <div
+            className="hidden lg:flex items-center gap-3 absolute -right-8 top-10 p-3.5 rounded-2xl float-badge-2 backdrop-blur-md z-10"
+            style={{
+              background: "rgba(17,18,22,0.85)",
+              border: "1px solid rgba(62,214,181,0.35)",
+              boxShadow: "0 12px 30px rgba(0,0,0,0.6), 0 0 20px rgba(62,214,181,0.15)",
+            }}
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(62,214,181,0.12)" }}>
+              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="#3ED6B5" strokeWidth="2">
+                <path d="M6 3v4m0 10v4m-2-14h4v10H4zM18 1v6m0 10v6m-2-16h4v10h-4zM12 7v2m0 8v2m-2-8h4v6h-4z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div className="text-left">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#F2C230] animate-pulse"></span>
+                <span className="text-[11px] font-bold tracking-wider text-[#3ED6B5] uppercase">FOREX / GOLD</span>
+              </div>
+              <div className="text-xs font-semibold text-[#F3EFE4]">XAU/USD +180 Pips Hit</div>
+            </div>
+          </div>
+
           <Reveal>
             <div
               className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 text-xs font-semibold"
@@ -272,16 +419,45 @@ export default function App() {
         </div>
       </section>
 
-      {/* TICKER */}
+      {/* TICKER 1: PAIRS & PIPS */}
       <div
-        className="overflow-hidden py-4"
-        style={{ borderTop: `1px solid ${LINE}`, borderBottom: `1px solid ${LINE}`, background: BG_ELEV }}
+        className="overflow-hidden py-3.5"
+        style={{ borderTop: `1px solid ${LINE}`, borderBottom: `1px solid rgba(242,194,48,0.08)`, background: BG_ELEV }}
       >
         <div className="flex w-max marquee-track">
           {[...tickerItems, ...tickerItems].map((t, i) => (
             <div key={i} className="flex items-center gap-2 px-6 text-sm font-semibold whitespace-nowrap">
               <span style={{ color: MUTED }}>{t.pair}</span>
               <span style={{ color: TEAL }}>{t.result}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* TICKER 2: MOVING BINANCE & FOREX PLATFORMS MARQUEE */}
+      <div
+        className="overflow-hidden py-3"
+        style={{ borderBottom: `1px solid ${LINE}`, background: "rgba(10,11,14,0.95)" }}
+      >
+        <div className="flex w-max marquee-reverse">
+          {[...platformPartners, ...platformPartners].map((p, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-2.5 px-5 py-2 mx-2 rounded-xl transition-all hover:scale-105"
+              style={{
+                background: "rgba(23,24,29,0.7)",
+                border: "1px solid rgba(242,194,48,0.12)",
+              }}
+            >
+              <div className="flex-shrink-0">{p.icon}</div>
+              <div className="text-left">
+                <div className="text-xs font-bold tracking-wider" style={{ color: p.color }}>
+                  {p.name}
+                </div>
+                <div className="text-[10px] uppercase font-semibold text-[#8B8D95]">
+                  {p.badge}
+                </div>
+              </div>
             </div>
           ))}
         </div>
