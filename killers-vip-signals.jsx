@@ -332,13 +332,15 @@ export default function App() {
               </div>
               <div className="display-font text-3xl mb-6" style={{ color: GOLD }}>48 USD</div>
 
-              <button
-                onClick={() => scrollTo("payment")}
-                className="rounded-full px-6 py-3.5 font-bold text-center transition-transform hover:scale-[1.03]"
+              <a
+                href="https://chat.whatsapp.com/IEtjp3hJlOfFOykoE0ptAx"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full px-6 py-3.5 font-bold text-center transition-transform hover:scale-[1.03] block"
                 style={{ background: GOLD, color: "#0A0A0A" }}
               >
                 Join FX Group
-              </button>
+              </a>
             </div>
           </Reveal>
 
@@ -376,20 +378,24 @@ export default function App() {
               <div className="display-font text-3xl mb-6" style={{ color: TEAL }}>30 USDT</div>
 
               <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  onClick={() => scrollTo("payment")}
-                  className="flex-1 rounded-full px-5 py-3.5 font-bold transition-transform hover:scale-[1.03]"
+                <a
+                  href="https://t.me/+rZFGwHu2Lq0xYWU1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 rounded-full px-5 py-3.5 font-bold transition-transform hover:scale-[1.03] text-center block"
                   style={{ background: TEAL, color: "#0A0A0A" }}
                 >
                   Crypto Swing Group
-                </button>
-                <button
-                  onClick={() => scrollTo("payment")}
-                  className="flex-1 rounded-full px-5 py-3.5 font-bold transition-transform hover:scale-[1.03]"
+                </a>
+                <a
+                  href="https://t.me/+etFvZxza_zsyODE1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 rounded-full px-5 py-3.5 font-bold transition-transform hover:scale-[1.03] text-center block"
                   style={{ background: TEAL, color: "#0A0A0A" }}
                 >
                   Scalping Group
-                </button>
+                </a>
               </div>
             </div>
           </Reveal>
@@ -489,8 +495,9 @@ export default function App() {
           <Reveal delay={0.1}>
             <div className="mt-10 rounded-2xl p-7 sm:p-9 flex flex-col sm:flex-row gap-4" style={{ background: BG, border: `1px solid ${LINE}` }}>
               <a
-                href="#"
-                onClick={(e) => e.preventDefault()}
+                href="https://api.whatsapp.com/send/?phone=94789784846&text&type=phone_number&app_absent=0"
+                target="_blank"
+                rel="noreferrer"
                 className="flex-1 flex items-center justify-center gap-2.5 rounded-full px-6 py-4 font-bold transition-transform hover:scale-[1.03]"
                 style={{ border: `1px solid ${GOLD}`, color: GOLD }}
               >
@@ -498,8 +505,9 @@ export default function App() {
                 WhatsApp
               </a>
               <a
-                href="#"
-                onClick={(e) => e.preventDefault()}
+                href="https://t.me/dila_owner"
+                target="_blank"
+                rel="noreferrer"
                 className="flex-1 flex items-center justify-center gap-2.5 rounded-full px-6 py-4 font-bold transition-transform hover:scale-[1.03]"
                 style={{ border: `1px solid ${GOLD}`, color: GOLD }}
               >
