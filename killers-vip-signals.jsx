@@ -102,14 +102,15 @@ function CopyField({ label, value }) {
   );
 }
 
-const tickerItems = [
-  { pair: "XAU/USD", result: "+ 118 pips", up: true },
-  { pair: "BTC/USDT", result: "+ 3.8%", up: true },
-  { pair: "EUR/USD", result: "+ 62 pips", up: true },
-  { pair: "ETH/USDT", result: "+ 5.1%", up: true },
-  { pair: "GBP/JPY", result: "+ 94 pips", up: true },
-  { pair: "SOL/USDT", result: "+ 7.4%", up: true },
-  { pair: "USD/JPY", result: "+ 41 pips", up: true },
+const defaultMarketTickers = [
+  { pair: "BTC/USDT", price: "$68,450.00", change: "+3.45%", up: true },
+  { pair: "ETH/USDT", price: "$2,640.20", change: "+2.15%", up: true },
+  { pair: "XAU/USD (Gold)", price: "$2,735.50", change: "+1.10%", up: true },
+  { pair: "SOL/USDT", price: "$152.80", change: "+5.80%", up: true },
+  { pair: "BNB/USDT", price: "$595.40", change: "+1.90%", up: true },
+  { pair: "EUR/USD", price: "1.0850", change: "+0.15%", up: true },
+  { pair: "GBP/USD", price: "1.2980", change: "-0.22%", up: false },
+  { pair: "USD/JPY", price: "152.40", change: "+0.35%", up: true },
 ];
 
 const platformPartners = [
@@ -168,6 +169,139 @@ const platformPartners = [
 
 export default function App() {
   const [navOpen, setNavOpen] = useState(false);
+  const [marketTickers, setMarketTickers] = useState(defaultMarketTickers);
+  const [isLiveActive, setIsLiveActive] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchLivePrices = async () => {
+      try {
+        const symbolsParam = encodeURIComponent(
+          JSON.stringify(["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "PAXGUSDT"])
+        );
+        const binancePromise = fetch(
+          `https://api.binance.com/api/v3/ticker/24hr?symbols=${symbolsParam}`
+        ).then((res) => (res.ok ? res.json() : null)).catch(() => null);
+
+        const forexPromise = fetch("https://open.er-api.com/v6/latest/USD")
+          .then((res) => (res.ok ? res.json() : null))
+          .catch(() => null);
+
+        const [binanceData, forexData] = await Promise.all([
+          binancePromise,
+          forexPromise,
+        ]);
+
+        const items = [];
+
+        if (Array.isArray(binanceData)) {
+          const bMap = {};
+          binanceData.forEach((item) => {
+            bMap[item.symbol] = {
+              price: parseFloat(item.lastPrice),
+              change: parseFloat(item.priceChangePercent),
+            };
+          });
+
+          if (bMap["BTCUSDT"]) {
+            const btc = bMap["BTCUSDT"];
+            items.push({
+              pair: "BTC/USDT",
+              price: `$${btc.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+              change: `${btc.change >= 0 ? "+" : ""}${btc.change.toFixed(2)}%`,
+              up: btc.change >= 0,
+            });
+          }
+
+          if (bMap["ETHUSDT"]) {
+            const eth = bMap["ETHUSDT"];
+            items.push({
+              pair: "ETH/USDT",
+              price: `$${eth.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+              change: `${eth.change >= 0 ? "+" : ""}${eth.change.toFixed(2)}%`,
+              up: eth.change >= 0,
+            });
+          }
+
+          if (bMap["PAXGUSDT"]) {
+            const paxg = bMap["PAXGUSDT"];
+            items.push({
+              pair: "XAU/USD (Gold)",
+              price: `$${paxg.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+              change: `${paxg.change >= 0 ? "+" : ""}${paxg.change.toFixed(2)}%`,
+              up: paxg.change >= 0,
+            });
+          }
+
+          if (bMap["SOLUSDT"]) {
+            const sol = bMap["SOLUSDT"];
+            items.push({
+              pair: "SOL/USDT",
+              price: `$${sol.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+              change: `${sol.change >= 0 ? "+" : ""}${sol.change.toFixed(2)}%`,
+              up: sol.change >= 0,
+            });
+          }
+
+          if (bMap["BNBUSDT"]) {
+            const bnb = bMap["BNBUSDT"];
+            items.push({
+              pair: "BNB/USDT",
+              price: `$${bnb.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+              change: `${bnb.change >= 0 ? "+" : ""}${bnb.change.toFixed(2)}%`,
+              up: bnb.change >= 0,
+            });
+          }
+        }
+
+        if (forexData && forexData.rates) {
+          const rates = forexData.rates;
+          if (rates.EUR) {
+            const eurUsd = 1 / rates.EUR;
+            items.push({
+              pair: "EUR/USD",
+              price: eurUsd.toFixed(4),
+              change: "Live FX",
+              up: true,
+            });
+          }
+          if (rates.GBP) {
+            const gbpUsd = 1 / rates.GBP;
+            items.push({
+              pair: "GBP/USD",
+              price: gbpUsd.toFixed(4),
+              change: "Live FX",
+              up: true,
+            });
+          }
+          if (rates.JPY) {
+            items.push({
+              pair: "USD/JPY",
+              price: rates.JPY.toFixed(2),
+              change: "Live FX",
+              up: true,
+            });
+          }
+        }
+
+        if (isMounted && items.length > 0) {
+          setMarketTickers(items);
+          setIsLiveActive(true);
+        }
+      } catch (err) {
+        console.warn("Live market fetch fallback:", err);
+      }
+    };
+
+    fetchLivePrices();
+    const interval = setInterval(fetchLivePrices, 15000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   const scrollTo = (id) => {
     setNavOpen(false);
@@ -328,47 +462,61 @@ export default function App() {
         <div className="max-w-5xl mx-auto text-center relative">
           {/* Floating Binance Trading Badge */}
           <div
-            className="hidden lg:flex items-center gap-3 absolute -left-8 top-16 p-3.5 rounded-2xl float-badge-1 backdrop-blur-md z-10"
+            className="hidden md:flex items-center gap-3 absolute md:-left-12 lg:-left-20 -top-6 p-3.5 rounded-2xl float-badge-1 backdrop-blur-md z-20 cursor-pointer transition-transform hover:scale-110"
             style={{
-              background: "rgba(17,18,22,0.85)",
-              border: "1px solid rgba(240,185,11,0.35)",
-              boxShadow: "0 12px 30px rgba(0,0,0,0.6), 0 0 20px rgba(240,185,11,0.15)",
+              background: "rgba(17,18,22,0.9)",
+              border: "1px solid rgba(240,185,11,0.45)",
             }}
           >
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(240,185,11,0.12)" }}>
-              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="#F0B90B">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(240,185,11,0.14)" }}>
+              <svg viewBox="0 0 24 24" className="w-6 h-6 animate-pulse" fill="#F0B90B">
                 <path d="M12 2L8.5 5.5L12 9L15.5 5.5L12 2ZM3 12L6.5 8.5L10 12L6.5 15.5L3 12ZM21 12L17.5 8.5L14 12L17.5 15.5L21 12ZM12 22L8.5 18.5L12 15L15.5 18.5L12 22ZM12 10.5L9.5 13L12 15.5L14.5 13L12 10.5Z" />
               </svg>
             </div>
             <div className="text-left">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#3ED6B5] animate-pulse"></span>
-                <span className="text-[11px] font-bold tracking-wider text-[#F0B90B] uppercase">BINANCE VIP</span>
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3ED6B5] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#3ED6B5]"></span>
+                </span>
+                <span className="text-[11px] font-extrabold tracking-wider text-[#F0B90B] uppercase">BINANCE VIP</span>
               </div>
-              <div className="text-xs font-semibold text-[#F3EFE4]">BTC/USDT Long +14.2%</div>
+              <div className="text-xs font-semibold text-[#F3EFE4] flex items-center gap-1.5 mt-0.5">
+                <span>BTC/USDT Long</span>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[rgba(62,214,181,0.18)] text-[#3ED6B5] border border-[rgba(62,214,181,0.4)]">
+                  +14.2%
+                </span>
+              </div>
             </div>
           </div>
 
           {/* Floating Forex Gold Badge */}
           <div
-            className="hidden lg:flex items-center gap-3 absolute -right-8 top-10 p-3.5 rounded-2xl float-badge-2 backdrop-blur-md z-10"
+            className="hidden md:flex items-center gap-3 absolute md:-right-8 lg:-right-16 top-40 p-3.5 rounded-2xl float-badge-2 backdrop-blur-md z-20 cursor-pointer transition-transform hover:scale-110"
             style={{
-              background: "rgba(17,18,22,0.85)",
-              border: "1px solid rgba(62,214,181,0.35)",
-              boxShadow: "0 12px 30px rgba(0,0,0,0.6), 0 0 20px rgba(62,214,181,0.15)",
+              background: "rgba(17,18,22,0.9)",
+              border: "1px solid rgba(62,214,181,0.45)",
             }}
           >
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(62,214,181,0.12)" }}>
-              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="#3ED6B5" strokeWidth="2">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(62,214,181,0.14)" }}>
+              <svg viewBox="0 0 24 24" className="w-6 h-6 animate-pulse" fill="none" stroke="#3ED6B5" strokeWidth="2">
                 <path d="M6 3v4m0 10v4m-2-14h4v10H4zM18 1v6m0 10v6m-2-16h4v10h-4zM12 7v2m0 8v2m-2-8h4v6h-4z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
             <div className="text-left">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#F2C230] animate-pulse"></span>
-                <span className="text-[11px] font-bold tracking-wider text-[#3ED6B5] uppercase">FOREX / GOLD</span>
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#F2C230] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#F2C230]"></span>
+                </span>
+                <span className="text-[11px] font-extrabold tracking-wider text-[#3ED6B5] uppercase">FOREX / GOLD</span>
               </div>
-              <div className="text-xs font-semibold text-[#F3EFE4]">XAU/USD +180 Pips Hit</div>
+              <div className="text-xs font-semibold text-[#F3EFE4] flex items-center gap-1.5 mt-0.5">
+                <span>XAU/USD Call</span>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[rgba(242,194,48,0.18)] text-[#F2C230] border border-[rgba(242,194,48,0.4)]">
+                  +180 Pips
+                </span>
+              </div>
             </div>
           </div>
 
@@ -383,12 +531,87 @@ export default function App() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <h1
-              className="display-font leading-[0.95] tracking-wide"
-              style={{ fontSize: "clamp(2.6rem, 8vw, 5rem)", color: TEXT }}
-            >
-              KILLERS <span style={{ color: GOLD }}>VIP</span> SIGNALS
-            </h1>
+            <div className="relative inline-block w-full max-w-4xl mx-auto py-2">
+              {/* Left Candlestick Cluster */}
+              <div className="hidden sm:flex items-end gap-2 absolute -left-4 md:-left-12 lg:-left-20 top-1/2 -translate-y-1/2 pointer-events-none opacity-50 md:opacity-75 float-candles">
+                {/* Candle 1 (Bullish Teal) */}
+                <div className="flex flex-col items-center candle-pulse-a">
+                  <div className="w-[1.5px] h-3 bg-[#3ED6B5]"></div>
+                  <div className="w-3.5 h-12 rounded-[2px] bg-[#3ED6B5] shadow-[0_0_10px_rgba(62,214,181,0.6)]"></div>
+                  <div className="w-[1.5px] h-4 bg-[#3ED6B5]"></div>
+                </div>
+                {/* Candle 2 (Bearish Gold) */}
+                <div className="flex flex-col items-center candle-pulse-b">
+                  <div className="w-[1.5px] h-4 bg-[#F2C230]"></div>
+                  <div className="w-3.5 h-7 rounded-[2px] bg-[#F2C230] shadow-[0_0_8px_rgba(242,194,48,0.5)]"></div>
+                  <div className="w-[1.5px] h-2 bg-[#F2C230]"></div>
+                </div>
+                {/* Candle 3 (Strong Bullish Teal) */}
+                <div className="flex flex-col items-center candle-pulse-c">
+                  <div className="w-[1.5px] h-2 bg-[#3ED6B5]"></div>
+                  <div className="w-3.5 h-16 rounded-[2px] bg-[#3ED6B5] shadow-[0_0_12px_rgba(62,214,181,0.8)]"></div>
+                  <div className="w-[1.5px] h-3 bg-[#3ED6B5]"></div>
+                </div>
+              </div>
+
+              {/* Right Candlestick Cluster */}
+              <div
+                className="hidden sm:flex items-end gap-2 absolute -right-4 md:-right-12 lg:-right-20 top-1/2 -translate-y-1/2 pointer-events-none opacity-50 md:opacity-75 float-candles"
+                style={{ animationDelay: "1.2s" }}
+              >
+                {/* Candle 4 (Bullish Teal) */}
+                <div className="flex flex-col items-center candle-pulse-c">
+                  <div className="w-[1.5px] h-3 bg-[#3ED6B5]"></div>
+                  <div className="w-3.5 h-10 rounded-[2px] bg-[#3ED6B5] shadow-[0_0_10px_rgba(62,214,181,0.6)]"></div>
+                  <div className="w-[1.5px] h-5 bg-[#3ED6B5]"></div>
+                </div>
+                {/* Candle 5 (Gold/Bearish) */}
+                <div className="flex flex-col items-center candle-pulse-a">
+                  <div className="w-[1.5px] h-5 bg-[#F2C230]"></div>
+                  <div className="w-3.5 h-7 rounded-[2px] bg-[#F2C230] shadow-[0_0_8px_rgba(242,194,48,0.5)]"></div>
+                  <div className="w-[1.5px] h-2 bg-[#F2C230]"></div>
+                </div>
+                {/* Candle 6 (Big Bull Teal) */}
+                <div className="flex flex-col items-center candle-pulse-b">
+                  <div className="w-[1.5px] h-4 bg-[#3ED6B5]"></div>
+                  <div className="w-3.5 h-14 rounded-[2px] bg-[#3ED6B5] shadow-[0_0_12px_rgba(62,214,181,0.7)]"></div>
+                  <div className="w-[1.5px] h-2 bg-[#3ED6B5]"></div>
+                </div>
+              </div>
+
+              {/* Moving Neon Laser Trading Trendline across Title */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-visible opacity-55 z-0">
+                <svg className="w-full h-28 overflow-visible laser-glide" viewBox="0 0 700 90" fill="none">
+                  <path
+                    d="M0,55 Q130,75 240,40 T440,48 T620,18 L700,28"
+                    stroke="url(#titleLineGrad)"
+                    strokeWidth="2.5"
+                    strokeDasharray="6 4"
+                  />
+                  {/* Moving Blinking Trade Marker on the line */}
+                  <circle cx="440" cy="48" r="4.5" fill="#3ED6B5" className="animate-pulse-dot" />
+                  <defs>
+                    <linearGradient id="titleLineGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#F2C230" stopOpacity="0" />
+                      <stop offset="25%" stopColor="#F2C230" stopOpacity="0.85" />
+                      <stop offset="65%" stopColor="#3ED6B5" stopOpacity="1" />
+                      <stop offset="100%" stopColor="#3ED6B5" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+
+              <h1
+                className="display-font leading-[0.95] tracking-wide relative z-10"
+                style={{
+                  fontSize: "clamp(2.6rem, 8vw, 5.2rem)",
+                  color: TEXT,
+                  textShadow: "0 0 35px rgba(242,194,48,0.18)",
+                }}
+              >
+                KILLERS <span style={{ color: GOLD }}>VIP</span> SIGNALS
+              </h1>
+            </div>
           </Reveal>
 
           <Reveal delay={0.2}>
@@ -419,16 +642,26 @@ export default function App() {
         </div>
       </section>
 
-      {/* TICKER 1: PAIRS & PIPS */}
+      {/* TICKER 1: LIVE MARKET PRICES */}
       <div
-        className="overflow-hidden py-3.5"
+        className="overflow-hidden py-3.5 flex items-center"
         style={{ borderTop: `1px solid ${LINE}`, borderBottom: `1px solid rgba(242,194,48,0.08)`, background: BG_ELEV }}
       >
         <div className="flex w-max marquee-track">
-          {[...tickerItems, ...tickerItems].map((t, i) => (
-            <div key={i} className="flex items-center gap-2 px-6 text-sm font-semibold whitespace-nowrap">
-              <span style={{ color: MUTED }}>{t.pair}</span>
-              <span style={{ color: TEAL }}>{t.result}</span>
+          {[...marketTickers, ...marketTickers].map((t, i) => (
+            <div key={i} className="flex items-center gap-3 px-6 text-sm whitespace-nowrap">
+              <span className="font-bold text-[#F3EFE4]">{t.pair}</span>
+              <span className="font-mono text-xs text-[#8B8D95]">{t.price}</span>
+              <span
+                className="px-2 py-0.5 rounded text-xs font-mono font-bold"
+                style={{
+                  color: t.up ? TEAL : "#FF5B5B",
+                  background: t.up ? "rgba(62,214,181,0.12)" : "rgba(255,91,91,0.12)",
+                  border: `1px solid ${t.up ? "rgba(62,214,181,0.3)" : "rgba(255,91,91,0.3)"}`,
+                }}
+              >
+                {t.change}
+              </span>
             </div>
           ))}
         </div>
