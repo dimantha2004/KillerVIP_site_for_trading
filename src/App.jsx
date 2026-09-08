@@ -414,7 +414,7 @@ export default function App() {
         </div>
 
         <div className="max-w-5xl mx-auto text-center relative">
-          {/* Floating Binance Trading Badge */}
+          {/* Jumping Binance Trading Badge */}
           <div
             className="hidden md:flex items-center gap-3 absolute md:-left-12 lg:-left-20 -top-6 p-3.5 rounded-2xl float-badge-1 backdrop-blur-md z-20 cursor-pointer transition-transform hover:scale-110"
             style={{
@@ -444,7 +444,35 @@ export default function App() {
             </div>
           </div>
 
-          {/* Floating Forex Gold Badge */}
+          {/* Jumping Standalone Binance Coin Token */}
+          <div
+            className="hidden sm:flex items-center justify-center w-11 h-11 rounded-full absolute -left-2 lg:left-6 top-1/2 pointer-events-none z-10 jumping-coin-1 backdrop-blur-md"
+            style={{
+              background: "rgba(240,185,11,0.18)",
+              border: "1.5px solid #F0B90B",
+              boxShadow: "0 0 22px rgba(240,185,11,0.65), inset 0 0 10px rgba(240,185,11,0.35)",
+            }}
+          >
+            <svg viewBox="0 0 24 24" className="w-6 h-6" fill="#F0B90B">
+              <path d="M12 2L8.5 5.5L12 9L15.5 5.5L12 2ZM3 12L6.5 8.5L10 12L6.5 15.5L3 12ZM21 12L17.5 8.5L14 12L17.5 15.5L21 12ZM12 22L8.5 18.5L12 15L15.5 18.5L12 22ZM12 10.5L9.5 13L12 15.5L14.5 13L12 10.5Z" />
+            </svg>
+          </div>
+
+          {/* Jumping Standalone Forex Candlestick Token */}
+          <div
+            className="hidden sm:flex items-center justify-center w-11 h-11 rounded-full absolute -right-2 lg:right-6 top-16 pointer-events-none z-10 jumping-coin-2 backdrop-blur-md"
+            style={{
+              background: "rgba(62,214,181,0.18)",
+              border: "1.5px solid #3ED6B5",
+              boxShadow: "0 0 22px rgba(62,214,181,0.65), inset 0 0 10px rgba(62,214,181,0.35)",
+            }}
+          >
+            <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="#3ED6B5" strokeWidth="2.2">
+              <path d="M6 3v4m0 10v4m-2-14h4v10H4zM18 1v6m0 10v6m-2-16h4v10h-4zM12 7v2m0 8v2m-2-8h4v6h-4z" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+
+          {/* Jumping Forex Gold Badge */}
           <div
             className="hidden md:flex items-center gap-3 absolute md:-right-8 lg:-right-16 top-40 p-3.5 rounded-2xl float-badge-2 backdrop-blur-md z-20 cursor-pointer transition-transform hover:scale-110"
             style={{

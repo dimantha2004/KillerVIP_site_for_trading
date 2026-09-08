@@ -336,16 +336,66 @@ export default function App() {
           50% { transform: translateY(-10px); }
         }
         .float-slow { animation: floatSlow 6s ease-in-out infinite; }
-        @keyframes floatBadge1 {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-14px) rotate(1.5deg); }
+        @keyframes jumpingBadge1 {
+          0%, 100% {
+            transform: translate(0px, 0px) scale(1) rotate(0deg);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6), 0 0 15px rgba(240,185,11,0.25);
+          }
+          20% {
+            transform: translate(28px, -45px) scale(1.08) rotate(5deg);
+            box-shadow: 0 24px 45px rgba(0,0,0,0.75), 0 0 32px rgba(240,185,11,0.5);
+          }
+          40% {
+            transform: translate(45px, -8px) scale(0.96) rotate(-3deg);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5), 0 0 18px rgba(240,185,11,0.3);
+          }
+          60% {
+            transform: translate(10px, -55px) scale(1.1) rotate(6deg);
+            box-shadow: 0 28px 50px rgba(0,0,0,0.8), 0 0 35px rgba(240,185,11,0.55);
+          }
+          80% {
+            transform: translate(-18px, -20px) scale(0.98) rotate(-4deg);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.6), 0 0 20px rgba(240,185,11,0.3);
+          }
         }
-        .float-badge-1 { animation: floatBadge1 5.5s ease-in-out infinite; }
-        @keyframes floatBadge2 {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-16px) rotate(-1.5deg); }
+        .float-badge-1 { animation: jumpingBadge1 6.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+        @keyframes jumpingBadge2 {
+          0%, 100% {
+            transform: translate(0px, 0px) scale(1) rotate(0deg);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6), 0 0 15px rgba(62,214,181,0.25);
+          }
+          20% {
+            transform: translate(-30px, -50px) scale(1.08) rotate(-6deg);
+            box-shadow: 0 24px 45px rgba(0,0,0,0.75), 0 0 32px rgba(62,214,181,0.5);
+          }
+          40% {
+            transform: translate(-50px, -10px) scale(0.95) rotate(4deg);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5), 0 0 18px rgba(62,214,181,0.3);
+          }
+          60% {
+            transform: translate(-12px, -60px) scale(1.12) rotate(-8deg);
+            box-shadow: 0 28px 50px rgba(0,0,0,0.8), 0 0 35px rgba(62,214,181,0.55);
+          }
+          80% {
+            transform: translate(22px, -25px) scale(0.98) rotate(5deg);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.6), 0 0 20px rgba(62,214,181,0.3);
+          }
         }
-        .float-badge-2 { animation: floatBadge2 6.5s ease-in-out infinite 0.8s; }
+        .float-badge-2 { animation: jumpingBadge2 7s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.5s; }
+        @keyframes jumpingCoin1 {
+          0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+          25% { transform: translate(25px, -55px) scale(1.15) rotate(25deg); }
+          50% { transform: translate(50px, -15px) scale(0.92) rotate(-15deg); }
+          75% { transform: translate(15px, -65px) scale(1.18) rotate(35deg); }
+        }
+        .jumping-coin-1 { animation: jumpingCoin1 5s ease-in-out infinite; }
+        @keyframes jumpingCoin2 {
+          0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+          25% { transform: translate(-30px, -60px) scale(1.18) rotate(-25deg); }
+          50% { transform: translate(-60px, -18px) scale(0.9) rotate(15deg); }
+          75% { transform: translate(-20px, -70px) scale(1.22) rotate(-35deg); }
+        }
+        .jumping-coin-2 { animation: jumpingCoin2 5.5s ease-in-out infinite 0.7s; }
         @keyframes marqueeReverse {
           0% { transform: translateX(-50%); }
           100% { transform: translateX(0); }
@@ -488,6 +538,34 @@ export default function App() {
                 </span>
               </div>
             </div>
+          </div>
+
+          {/* Jumping Standalone Binance Coin Token */}
+          <div
+            className="hidden sm:flex items-center justify-center w-11 h-11 rounded-full absolute -left-2 lg:left-6 top-1/2 pointer-events-none z-10 jumping-coin-1 backdrop-blur-md"
+            style={{
+              background: "rgba(240,185,11,0.18)",
+              border: "1.5px solid #F0B90B",
+              boxShadow: "0 0 22px rgba(240,185,11,0.65), inset 0 0 10px rgba(240,185,11,0.35)",
+            }}
+          >
+            <svg viewBox="0 0 24 24" className="w-6 h-6" fill="#F0B90B">
+              <path d="M12 2L8.5 5.5L12 9L15.5 5.5L12 2ZM3 12L6.5 8.5L10 12L6.5 15.5L3 12ZM21 12L17.5 8.5L14 12L17.5 15.5L21 12ZM12 22L8.5 18.5L12 15L15.5 18.5L12 22ZM12 10.5L9.5 13L12 15.5L14.5 13L12 10.5Z" />
+            </svg>
+          </div>
+
+          {/* Jumping Standalone Forex Candlestick Token */}
+          <div
+            className="hidden sm:flex items-center justify-center w-11 h-11 rounded-full absolute -right-2 lg:right-6 top-16 pointer-events-none z-10 jumping-coin-2 backdrop-blur-md"
+            style={{
+              background: "rgba(62,214,181,0.18)",
+              border: "1.5px solid #3ED6B5",
+              boxShadow: "0 0 22px rgba(62,214,181,0.65), inset 0 0 10px rgba(62,214,181,0.35)",
+            }}
+          >
+            <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="#3ED6B5" strokeWidth="2.2">
+              <path d="M6 3v4m0 10v4m-2-14h4v10H4zM18 1v6m0 10v6m-2-16h4v10h-4zM12 7v2m0 8v2m-2-8h4v6h-4z" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </div>
 
           {/* Floating Forex Gold Badge */}
