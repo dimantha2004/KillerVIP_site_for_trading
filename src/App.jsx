@@ -886,7 +886,7 @@ export default function App() {
           <Reveal delay={0.1}>
             <div className="mt-10 rounded-2xl p-7 sm:p-9 flex flex-col sm:flex-row gap-4" style={{ background: BG, border: `1px solid ${LINE}` }}>
               <a
-                href="https://api.whatsapp.com/send/?phone=94789784846&text&type=phone_number&app_absent=0"
+                href="https://api.whatsapp.com/send/?phone=94779484510&text&type=phone_number&app_absent=0"
                 target="_blank"
                 rel="noreferrer"
                 className="flex-1 flex items-center justify-center gap-2.5 rounded-full px-6 py-4 font-bold transition-transform hover:scale-[1.03] cursor-pointer"
